@@ -5,7 +5,7 @@ require('dotenv').config();
 const path = require('path')
 const stability_url = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image'
 const stability_api_key = process.env.STABILITY_API_KEY
-const stability_prompt = `Create a picture to depict this weather forecast for Edmonton, Alberta, Canada in ${new Date().toLocaleString('default', { month: 'long' })}. `;
+const stability_prompt = `Create a picture to depict this weather forecast in Edmonton, Alberta, Canada during the month of ${new Date().toLocaleString('default', { month: 'long' })}. Landscape.  `;
 const stability_neg_prompt = 'mountains';
 
 function createWindow() {
@@ -93,7 +93,8 @@ async function generateImage() {
 async function parseWeatherText(text) {
 
     //TODO: handle improper text
-    const edmontonForecastRegex = /City of Edmonton - .*?\.\s*((Tonight|Today)\..*?\.)\s*(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gm;
+    //const edmontonForecastRegex = /City of Edmonton - .*?\.\s*((Tonight|Today)\..*?\.)\s*(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gm;
+    const edmontonForecastRegex = /City of Edmonton -.*\n((Today|Tonight).*\n*.*(?!Tonight\.*|Tomorrow\.*|Monday\.*|Tuesday\.*|Wednesday\.*|Thursday\.*)|Friday\.*|Saturday\.*|Sunday\.*)/gm;
     const edmontonForecastMatch = edmontonForecastRegex.exec(text);
     
     console.log(edmontonForecastMatch[1]);
