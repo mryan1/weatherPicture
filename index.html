@@ -4,13 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Weather Image</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
-    <div>
-        <img src="data:image/png;base64,{{ base64Image }}" alt="image">
-    </div>
-    <div id="forecast"></div>
+
     <script src="render.js"></script>
 </body>
 
