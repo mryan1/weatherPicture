@@ -62,7 +62,7 @@ async function generateImage(weather) {
         body: JSON.stringify({
             "cfg_scale": 7,
             "clip_guidance_preset": "FAST_BLUE",
-            "height": 480,
+            "height": 448,
             "sampler": "K_DPM_2_ANCESTRAL",
             "samples": 1,
             "seed": 0,
@@ -74,7 +74,7 @@ async function generateImage(weather) {
                 "weight": 1
               }
             ],
-            "width": 800
+            "width": 768
           })
     });
     const data = await response.json();
