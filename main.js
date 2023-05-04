@@ -5,7 +5,8 @@ require('dotenv').config();
 const path = require('path')
 const stability_url = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image'
 const stability_api_key = process.env.STABILITY_API_KEY
-const stability_prompt = `Create a picture to depict this weather forecast for Edmonton, Alberta, Canada in ${new Date().toLocaleString('default', { month: 'long' })}. Edmonton does not have mountains.  `;
+const stability_prompt = `Create a picture to depict this weather forecast for Edmonton, Alberta, Canada in ${new Date().toLocaleString('default', { month: 'long' })}. `;
+const stability_neg_prompt = 'mountains';
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -33,12 +34,15 @@ app.whenReady().then(() => {
     })
 })
 
-async function generateImage(weather) {
+async function generateImage() {
+    const weather = await fetchWeather();
+    console.log("Prompt ", stability_prompt + weather);
 
     const artStyles = [
         '3d-model',
         'analog-film',
-        'anime cinematic',
+        'anime',
+        'cinematic',
         'comic-book',
         'digital-art',
         'enhance fantasy-art',
@@ -72,6 +76,10 @@ async function generateImage(weather) {
               {
                 "text": stability_prompt + weather,
                 "weight": 1
+              },
+              {
+                "text": stability_neg_prompt,
+                "weight": -.9
               }
             ],
             "width": 768
