@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
-    <title>Hello Electron</title>
-  </head>
-  <body>
-    <h1>Hello Electron</h1>
-    <p>Welcome to your Electron app!</p>
+    <title>Weather Image</title>
+</head>
+
+<body>
+    <div>
+        <img src="data:image/png;base64,{{ base64Image }}" alt="image">
+    </div>
     <div id="forecast"></div>
     <script src="render.js"></script>
-  </body>
+</body>
+
 </html>

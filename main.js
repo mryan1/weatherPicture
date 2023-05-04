@@ -1,7 +1,11 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { DOMParser } = require('xmldom');
-const path = require('path')
+require('dotenv').config();
 
+const path = require('path')
+const stability_url = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image'
+const stability_api_key = process.env.STABILITY_API_KEY
+const stability_prompt = `Create a picture to depict this weather forecast for Edmonton, Alberta, Canada in ${new Date().toLocaleString('default', { month: 'long' })}. `;
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -19,6 +23,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
     ipcMain.handle('request-weather-update', fetchWeather);
+    ipcMain.handle('generate-image', generateImage);
     createWindow()
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -27,14 +32,64 @@ app.whenReady().then(() => {
     })
 })
 
+async function generateImage(weather) {
+
+    const artStyles = [
+        '3d-model',
+        'analog-film',
+        'anime cinematic',
+        'comic-book',
+        'digital-art',
+        'enhance fantasy-art',
+        'isometric',
+        'line-art',
+        'low-poly',
+        'modeling-compound',
+        'neon-punk',
+        'origami',
+        'photographic',
+        'pixel-art',
+        'tile-texture'
+      ];
+      
+    const response = await fetch(stability_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${stability_api_key}`
+        },
+        body: JSON.stringify({
+            "cfg_scale": 7,
+            "clip_guidance_preset": "FAST_BLUE",
+            "height": 512,
+            "sampler": "K_DPM_2_ANCESTRAL",
+            "samples": 1,
+            "seed": 0,
+            "steps": 75,
+            "style_preset": artStyles[Math.floor(Math.random() * artStyles.length)],
+            "text_prompts": [
+              {
+                "text": stability_prompt + weather,
+                "weight": 1
+              }
+            ],
+            "width": 512
+          })
+    });
+    const data = await response.json();
+    //console.log(data);
+    return data;
+}
+
 async function parseWeatherText(text) {
 
     //TODO: handle improper text
-    const start = text.indexOf("City of Edmonton - St. Albert - Sherwood Park.");
-    const end = text.indexOf("Spruce Grove - Morinville - Mayerthorpe - Evansburg.");
+    const edmontonForecastRegex = /City of Edmonton - .*?\.\s*((Tonight|Today)\..*?\.)\s*(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gm;
+    const edmontonForecastMatch = edmontonForecastRegex.exec(text);
+    
+    console.log(edmontonForecastMatch[1]);
 
-    const forecast = text.substring(start, end);
-    return forecast;
+    return edmontonForecastMatch[1];
 
 }
 

@@ -11,3 +11,17 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
 });
+
+contextBridge.exposeInMainWorld('stability', {
+  generateImage: async () => {
+    try {
+      const imageData = await ipcRenderer.invoke('generate-image');
+      console.log('in preload: ' + imageData);
+      return imageData;
+    } catch (error) {
+      console.error(error);
+    }
+  }});
+  
+  
+  
