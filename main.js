@@ -44,12 +44,12 @@ function createButtonWindow() {
       show: false,
       parent: win,
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        preload: path.join(__dirname, 'buttonPreload.js')
       }
     });
 
     buttonWindow.loadFile('buttons.html');
-
   }
 function showMenu() {
     buttonWindow.show();
@@ -64,6 +64,8 @@ app.whenReady().then(() => {
     ipcMain.handle('generate-image', generateImage);
     ipcMain.handle('show-menu', showMenu);
     ipcMain.handle('hide-menu', hideMenu);
+    ipcMain.handle('exit', ()=> app.quit());
+
     createWindow()
     createButtonWindow();
     app.on('activate', () => {

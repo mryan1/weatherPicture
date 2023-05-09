@@ -1,7 +1,12 @@
-// Add event listeners to the buttons
-document.getElementById('loadButton').addEventListener('click', () => {
-    // Logic to load a new picture
-});
-document.getElementById('exitButton').addEventListener('click', () => {
-    // Logic to exit the app
-});
+
+window.onload = async () => {
+
+    // Add event listeners to the buttons
+    document.getElementById('loadButton').addEventListener('click', () => {
+        // Logic to load a new picture
+    });
+    document.getElementById('exitButton').addEventListener('click', () => {
+        console.log('exit');
+        window.exit.exit();
+    });
+};

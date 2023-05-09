@@ -35,8 +35,4 @@ contextBridge.exposeInMainWorld('hideMenu', {
   }
 });
 
-contextBridge.exposeInMainWorld('exit', {
-  exit: async () => {
-    ipcRenderer.invoke('exit');
-  }
-}); 
+

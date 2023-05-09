@@ -1,5 +1,4 @@
 window.onload = async () => {
-    //listen for menu button click
 
     // create the loading message element
     const loadingMessage = document.createElement('div');
