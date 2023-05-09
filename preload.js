@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('stability', {
   }
 });
 
+//TODO: combine these under one 'menu' api
 contextBridge.exposeInMainWorld('showMenu', {
   showMenu: async () => {
     ipcRenderer.invoke('show-menu');
@@ -36,3 +37,9 @@ contextBridge.exposeInMainWorld('hideMenu', {
 });
 
 
+// listen for the message from the main process
+// https://www.electronjs.org/docs/latest/tutorial/ipc#2-expose-ipcrendereron-via-preload
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  onLoadNewPicture: (callback) => ipcRenderer.on('loadNewPicture', callback)
+})

@@ -5,4 +5,12 @@ contextBridge.exposeInMainWorld('exit', {
     console.log('prerender exit');
     ipcRenderer.invoke('exit');
   }
-}); 
+});
+
+contextBridge.exposeInMainWorld('loadNewPicture', {
+  loadNewPicture: async () => {
+    ipcRenderer.invoke('loadNewPicture');
+  }
+});
+
+

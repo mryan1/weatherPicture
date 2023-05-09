@@ -1,19 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Touch Screen Buttons</title>
     <style>
-      button {
-        font-size: 24px;
-        width: 200px;
-        height: 100px;
-      }
+        button {
+            font-size: 18px;
+            width: 200px;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 10px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        button:focus {
+            outline: none;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <button id="loadButton">Load New Picture</button>
     <button id="exitButton">Exit</button>
     <script src="button.js"></script>
-  </body>
+</body>
+
 </html>

@@ -12,7 +12,7 @@ const stability_neg_prompt = 'mountains';
 let win, buttonWindow;
 
 function createWindow() {
-     win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 800,
         height: 480,
         frame: false,
@@ -27,30 +27,30 @@ function createWindow() {
 
     win.on('closed', () => {
         win = null;
-      });
+    });
 }
 
 function createButtonWindow() {
     buttonWindow = new BrowserWindow({
-      width: 400,
-      height: 250,
-      frame: false,
-      transparent: true,
-      alwaysOnTop: true,
-      resizable: false,
-      fullscreen: false,
-      fullscreenable: false,
-      skipTaskbar: true,
-      show: false,
-      parent: win,
-      webPreferences: {
-        nodeIntegration: true,
-        preload: path.join(__dirname, 'buttonPreload.js')
-      }
+        width: 400,
+        height: 250,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        resizable: false,
+        fullscreen: false,
+        fullscreenable: false,
+        skipTaskbar: true,
+        show: false,
+        parent: win,
+        webPreferences: {
+            nodeIntegration: true,
+            preload: path.join(__dirname, 'buttonPreload.js')
+        }
     });
 
     buttonWindow.loadFile('buttons.html');
-  }
+}
 function showMenu() {
     buttonWindow.show();
 }
@@ -62,18 +62,29 @@ function hideMenu() {
 app.whenReady().then(() => {
     ipcMain.handle('request-weather-update', fetchWeather);
     ipcMain.handle('generate-image', generateImage);
+    //TODO: change these to ipcMain.on 
     ipcMain.handle('show-menu', showMenu);
     ipcMain.handle('hide-menu', hideMenu);
-    ipcMain.handle('exit', ()=> app.quit());
+    ipcMain.handle('exit', () => app.quit());
 
     createWindow()
     createButtonWindow();
+
+    win.webContents.on('did-finish-load', () => {
+        ipcMain.handle('loadNewPicture', () => {
+            console.log('loadNewPicture');
+            win.webContents.send('loadNewPicture','test msg');
+        });
+    });
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }
     })
 })
+
+
 
 async function generateImage() {
     const weather = await fetchWeather();

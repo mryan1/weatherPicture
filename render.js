@@ -1,3 +1,4 @@
+
 window.onload = async () => {
 
     // create the loading message element
@@ -22,9 +23,15 @@ window.onload = async () => {
     });
 
     // generate the first image and show it
-    const weatherImage = await window.stability.generateImage();
-    const base64ImageData = weatherImage.artifacts[0].base64;
-    imgElement.src = 'data:image/png;base64,' + base64ImageData;
+    async function updateImage() {
+
+        const weatherImage = await window.stability.generateImage();
+        const base64ImageData = weatherImage.artifacts[0].base64;
+        imgElement.src = 'data:image/png;base64,' + base64ImageData;
+
+    };
+    updateImage();
+
     imgElement.onload = () => {
         // hide the loading message and show the image once it has finished loading
         loadingMessage.style.display = 'none';
@@ -33,8 +40,12 @@ window.onload = async () => {
 
     // generate a new image every hour
     setInterval(async () => {
-        const weatherImage = await window.stability.generateImage();
-        const base64ImageData = weatherImage.artifacts[0].base64;
-        imgElement.src = 'data:image/png;base64,' + base64ImageData;
+        updateImage();
     }, 3600000); // 60000
+
+    window.electronAPI.onLoadNewPicture((_event, value) => {
+        updateImage();
+    })
+
+
 };
