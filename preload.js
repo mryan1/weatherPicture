@@ -16,12 +16,27 @@ contextBridge.exposeInMainWorld('stability', {
   generateImage: async () => {
     try {
       const imageData = await ipcRenderer.invoke('generate-image');
-      console.log('in preload: ' + imageData);
       return imageData;
     } catch (error) {
       console.error(error);
     }
-  }});
-  
-  
-  
+  }
+});
+
+contextBridge.exposeInMainWorld('showMenu', {
+  showMenu: async () => {
+    ipcRenderer.invoke('show-menu');
+  }
+});
+
+contextBridge.exposeInMainWorld('hideMenu', {
+  hideMenu: async () => {
+    ipcRenderer.invoke('hide-menu');
+  }
+});
+
+contextBridge.exposeInMainWorld('exit', {
+  exit: async () => {
+    ipcRenderer.invoke('exit');
+  }
+}); 

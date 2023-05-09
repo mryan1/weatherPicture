@@ -8,25 +8,64 @@ const stability_api_key = process.env.STABILITY_API_KEY
 const stability_prompt = `Create a picture to depict this weather forecast in Edmonton, Alberta, Canada during the month of ${new Date().toLocaleString('default', { month: 'long' })}. Landscape.  `;
 const stability_neg_prompt = 'mountains';
 
+
+let win, buttonWindow;
+
 function createWindow() {
-    const win = new BrowserWindow({
+     win = new BrowserWindow({
         width: 800,
         height: 480,
         frame: false,
+        fullscreen: true,
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js')
         }
     })
+
     win.loadFile('index.html')
+
+    win.on('closed', () => {
+        win = null;
+      });
 }
 
+function createButtonWindow() {
+    buttonWindow = new BrowserWindow({
+      width: 400,
+      height: 250,
+      frame: false,
+      transparent: true,
+      alwaysOnTop: true,
+      resizable: false,
+      fullscreen: false,
+      fullscreenable: false,
+      skipTaskbar: true,
+      show: false,
+      parent: win,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
 
+    buttonWindow.loadFile('buttons.html');
+
+  }
+function showMenu() {
+    buttonWindow.show();
+}
+
+function hideMenu() {
+    buttonWindow.hide();
+}
 
 app.whenReady().then(() => {
     ipcMain.handle('request-weather-update', fetchWeather);
     ipcMain.handle('generate-image', generateImage);
+    ipcMain.handle('show-menu', showMenu);
+    ipcMain.handle('hide-menu', hideMenu);
     createWindow()
+    createButtonWindow();
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
@@ -36,7 +75,6 @@ app.whenReady().then(() => {
 
 async function generateImage() {
     const weather = await fetchWeather();
-    console.log("Prompt ", stability_prompt + weather);
 
     const artStyles = [
         '3d-model',
@@ -55,8 +93,8 @@ async function generateImage() {
         'photographic',
         'pixel-art',
         'tile-texture'
-      ];
-      
+    ];
+
     const response = await fetch(stability_url, {
         method: 'POST',
         headers: {
@@ -73,20 +111,19 @@ async function generateImage() {
             "steps": 75,
             "style_preset": artStyles[Math.floor(Math.random() * artStyles.length)],
             "text_prompts": [
-              {
-                "text": stability_prompt + weather,
-                "weight": 1
-              },
-              {
-                "text": stability_neg_prompt,
-                "weight": -.9
-              }
+                {
+                    "text": stability_prompt + weather,
+                    "weight": 1
+                },
+                {
+                    "text": stability_neg_prompt,
+                    "weight": -.9
+                }
             ],
             "width": 768
-          })
+        })
     });
     const data = await response.json();
-    //console.log(data);
     return data;
 }
 
@@ -96,9 +133,6 @@ async function parseWeatherText(text) {
     //const edmontonForecastRegex = /City of Edmonton - .*?\.\s*((Tonight|Today)\..*?\.)\s*(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gm;
     const edmontonForecastRegex = /City of Edmonton -.*\n((Today|Tonight).*\n*.*(?!Tonight\.*|Tomorrow\.*|Monday\.*|Tuesday\.*|Wednesday\.*|Thursday\.*)|Friday\.*|Saturday\.*|Sunday\.*)/gm;
     const edmontonForecastMatch = edmontonForecastRegex.exec(text);
-    
-    console.log(edmontonForecastMatch[1]);
-
     return edmontonForecastMatch[1];
 
 }

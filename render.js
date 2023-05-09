@@ -1,4 +1,6 @@
 window.onload = async () => {
+    //listen for menu button click
+
     // create the loading message element
     const loadingMessage = document.createElement('div');
     loadingMessage.innerText = 'Loading...';
@@ -8,6 +10,17 @@ window.onload = async () => {
     const imgElement = document.createElement('img');
     imgElement.style.display = 'none';
     document.body.appendChild(imgElement);
+
+    let clickedOnce = true;
+    imgElement.addEventListener('click', () => {
+        if (clickedOnce) {
+            clickedOnce = false;
+            window.showMenu.showMenu();
+        } else {
+            clickedOnce = true;
+            window.hideMenu.hideMenu();
+        }
+    });
 
     // generate the first image and show it
     const weatherImage = await window.stability.generateImage();
@@ -24,5 +37,5 @@ window.onload = async () => {
         const weatherImage = await window.stability.generateImage();
         const base64ImageData = weatherImage.artifacts[0].base64;
         imgElement.src = 'data:image/png;base64,' + base64ImageData;
-    },  3600000);
+    }, 3600000); // 60000
 };
