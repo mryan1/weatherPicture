@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { DOMParser } = require('xmldom');
 require('dotenv').config();
+const fetch = require("node-fetch")
 
 const path = require('path')
 const stability_url = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image'
