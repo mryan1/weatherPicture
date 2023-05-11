@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { DOMParser } = require('xmldom');
 require('dotenv').config();
+const fetch = require('node-fetch');
 
 const path = require('path')
 const stability_url = 'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image'
@@ -8,13 +9,17 @@ const stability_api_key = process.env.STABILITY_API_KEY
 const stability_prompt = `Create a picture to depict this weather forecast in Edmonton, Alberta, Canada during the month of ${new Date().toLocaleString('default', { month: 'long' })}. Landscape.  `;
 const stability_neg_prompt = 'mountains';
 
+const screenSize = {
+    width: 800,
+    height: 480
+}
 
 let win, buttonWindow;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 800,
-        height: 480,
+        width: screenSize.width,
+        height: screenSize.height,
         frame: false,
         fullscreen: true,
         webPreferences: {
